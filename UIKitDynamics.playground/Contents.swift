@@ -17,17 +17,23 @@ class Bubble: UIView {
     let pan = UIPanGestureRecognizer()
     let force = UIPushBehavior()
     let resistance = UIDynamicItemBehavior()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setup()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setup()
+    }
+    
+    func setup() {
         pan.addTarget(self, action: #selector(didPan))
         self.addGestureRecognizer(pan)
         force.addItem(self)
         resistance.addItem(self)
         resistance.resistance = CGFloat(resistanceFactor)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
     
     func didPan(gesture: UIPanGestureRecognizer) {
@@ -45,12 +51,16 @@ class Bubble: UIView {
     
 }
 
+func rnd() -> CGFloat {
+    return CGFloat(arc4random_uniform(255))/255.0
+}
+
 let s: CGFloat = 100
 for i in 1...10 {
     let f = CGFloat(i)
     let v = Bubble(frame: CGRectMake(cs/2,cs/2,s,s))
     v.layer.cornerRadius = s/2
-    v.backgroundColor = UIColor(red: CGFloat(arc4random_uniform(255))/255.0, green: CGFloat(arc4random_uniform(255))/255.0, blue: CGFloat(arc4random_uniform(255))/255.0, alpha: 1.0)
+    v.backgroundColor = UIColor(red: rnd(), green: rnd(), blue: rnd(), alpha: 1.0)
     container.addSubview(v)
     collision.addItem(v)
     animator.addBehavior(v.force)
